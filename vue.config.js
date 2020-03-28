@@ -6,7 +6,7 @@ module.exports = {
     resolve: {
       alias: {
         'assets': '@/assets',
-        'commponent': '@/components',
+        'components': '@/components',
         'network': '@/network',
         'views': '@/views'
       }
