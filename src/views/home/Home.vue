@@ -1,22 +1,40 @@
 <template>
   <div>
-    <nav-bar class="home-nav"><div slot="center" >购物车</div></nav-bar>
+    <home-nav-bar/>
+    <home-swiper></home-swiper>
   </div>
 </template>
 
 <script>
-import NavBar from 'components/common/navbar/NavBar'
+import HomeNavBar from './childComps/HomeNavBar'
+import HomeSwiper from './childComps/HomeSwiper'
+import {getHomeMultidata} from 'network/home'
 export default {
   name: 'Home',
   components: {
-    NavBar
-  }
+    HomeNavBar,
+    HomeSwiper
+  },
+  data() {
+    return {
+      banner: [],
+      recommend: []
+    }
+  },
+  created() {
+    getHomeMultidata()
+      .then(res => {
+        // console.log(res.success);
+        // console.log(res.data);
+        if(res.success && res.data) {
+          this.banner = res.data.banner.list
+          this.recommend = res.data.recommend.list
+        }
+      })
+  },
 }
 </script>
 
 <style scoped>
-.home-nav{
-  background-color: var(--color-high-text);
-  color: var(--color-background);
-}
+
 </style>
