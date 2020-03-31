@@ -1,7 +1,7 @@
 <template>
   <div>
     <home-nav-bar/>
-    <home-swiper></home-swiper>
+    <home-swiper :banner="banner"></home-swiper>
   </div>
 </template>
 
@@ -26,10 +26,8 @@ export default {
       .then(res => {
         // console.log(res.success);
         // console.log(res.data);
-        if(res.success && res.data) {
-          this.banner = res.data.banner.list
-          this.recommend = res.data.recommend.list
-        }
+        this.banner = res.data.banner.list
+        this.recommend = res.data.recommend.list
       })
   },
 }
