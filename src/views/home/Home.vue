@@ -13,7 +13,7 @@ export default {
   name: 'Home',
   components: {
     HomeNavBar,
-    HomeSwiper
+    HomeSwiper,
   },
   data() {
     return {
