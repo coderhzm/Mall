@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-swiper">
     <Swiper v-if="showSwiper">
       <swiper-item v-for="(item,index) in banner" :key="index">
         <a :href="item.link">
@@ -32,5 +32,11 @@ export default {
 </script>
 
 <style scoped>
-
+.home-swiper {
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  padding-bottom: 52%;
+  background-color: #eee;
+}
 </style>

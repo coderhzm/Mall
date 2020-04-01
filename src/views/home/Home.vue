@@ -4,7 +4,8 @@
     <home-swiper :banner="banner"/>
     <home-recommend :recommend="recommend"/>
     <home-feature/>
-
+    <home-tab-control/>
+    
 
     <div>
       <br>
@@ -116,6 +117,8 @@ import HomeNavBar from './childComps/HomeNavBar'
 import HomeSwiper from './childComps/HomeSwiper'
 import HomeRecommend from './childComps/HomeRecommend'
 import HomeFeature from './childComps/HomeFeature'
+import HomeTabControl from './childComps/HomeTabControl'
+
 import {getHomeMultidata} from 'network/home'
 export default {
   name: 'Home',
@@ -123,12 +126,18 @@ export default {
     HomeNavBar,
     HomeSwiper,
     HomeRecommend,
-    HomeFeature
+    HomeFeature,
+    HomeTabControl
   },
   data() {
     return {
       banner: [],
-      recommend: []
+      recommend: [],
+      goods: {
+        'pop': {page: 0, list: []},
+        'new': {page: 0, list: []},
+        'sell': {page: 0, list: []}
+      }
     }
   },
   created() {
