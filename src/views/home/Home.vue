@@ -26,8 +26,10 @@ export default {
       .then(res => {
         // console.log(res.success);
         // console.log(res.data);
-        this.banner = res.data.banner.list
-        this.recommend = res.data.recommend.list
+        if(res.success && res.data){
+          this.banner = res.data.banner.list
+          this.recommend = res.data.recommend.list
+        }
       })
   },
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Swiper>
+    <Swiper v-if="showSwiper">
       <swiper-item v-for="(item,index) in banner" :key="index">
         <a :href="item.link">
           <img :src="item.image" alt="">
@@ -22,6 +22,11 @@ export default {
   },
   props: {
     banner: Array
+  },
+  computed: {
+    showSwiper() {
+      return this.banner.length
+    }
   }
 }
 </script>
