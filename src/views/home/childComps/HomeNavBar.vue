@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-navbar">
     <nav-bar class="home-nav">
       <div slot="center" >购物车</div>
     </nav-bar>
@@ -17,8 +17,18 @@ export default {
 </script>
 
 <style scoped>
+.home-navbar{
+  padding-bottom: 44px;
+}
 .home-nav{
   background-color: var(--color-high-text);
   color: var(--color-background);
+  font-weight: 700;
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 10;
 }
 </style>
