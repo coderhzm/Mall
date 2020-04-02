@@ -119,7 +119,7 @@ import HomeRecommend from './childComps/HomeRecommend'
 import HomeFeature from './childComps/HomeFeature'
 import HomeTabControl from './childComps/HomeTabControl'
 
-import {getHomeMultidata} from 'network/home'
+import { getHomeMultidata, getHomeGoods } from 'network/home'
 export default {
   name: 'Home',
   components: {
@@ -141,16 +141,34 @@ export default {
     }
   },
   created() {
-    getHomeMultidata()
-      .then(res => {
-        // console.log(res.success);
-        // console.log(res.data);
-        if(res.success && res.data){
+    //请求banner和recommend数据
+    this.HomeMultidata()
+    //请求商品（goods）数据
+    this.HomeGoods('pop')
+    this.HomeGoods('new')
+    this.HomeGoods('sell')
+  },
+  methods: {
+    //首页轮播（banner）和recommend数据
+    HomeMultidata() {
+      getHomeMultidata()
+        .then(res => {
+          // console.log(res.success);
+          // console.log(res.data);
           this.banner = res.data.banner.list
           this.recommend = res.data.recommend.list
-        }
-      })
-  },
+        })
+    },
+    //首页商品数据
+    HomeGoods(type) {
+      const page = this.goods[type].page + 1
+      getHomeGoods(type,page)
+        .then(res => {
+          this.goods[type].list.push(...res.data.list)
+          this.goods[type].page += 1
+        })
+    }
+  }
 }
 </script>
 
