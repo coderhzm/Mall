@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="main-tab-bar">
     <tab-bar>
       <tab-bar-item link="/home" :activeColor = "this.activeColor">
         <img slot="icon" src="~assets/img/tabbar/home.svg" alt="">
@@ -44,4 +44,7 @@ export default {
 </script>
 
 <style scoped>
+#main-tab-bar{
+  z-index: 9;
+}
 </style>
