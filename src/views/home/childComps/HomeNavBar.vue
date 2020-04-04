@@ -17,9 +17,6 @@ export default {
 </script>
 
 <style scoped>
-.home-navbar{
-  padding-bottom: 44px;
-}
 .home-nav{
   background-color: var(--color-high-text);
   color: var(--color-background);

@@ -1,6 +1,6 @@
 <<template>
   <div>
-    <div class="wrapper" ref="wrapper">
+    <!-- <div class="wrapper" ref="wrappertest">
       <div>
         <ul>
           <li>这是内容1</li>
@@ -105,53 +105,53 @@
           <li>这是内容100</li>
         </ul>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import BScroll from '@better-scroll/core'
-import Pullup from '@better-scroll/pull-up'
-import PullDown from '@better-scroll/pull-down'
+// import BScroll from '@better-scroll/core'
+// import Pullup from '@better-scroll/pull-up'
+// import PullDown from '@better-scroll/pull-down'
 
-BScroll.use(Pullup)
-BScroll.use(PullDown)
-export default {
-  name: 'Category',
-  data() {
-    return{
-    }
-  },
-  mounted() {
-   this.scroll = new BScroll(this.$refs.wrapper,{
-    probeType: true,
-    pullUpLoad: true,
-    scrollY: true,
-    pullDownRefresh: true,
-    click: true,
-   })
+// BScroll.use(Pullup)
+// BScroll.use(PullDown)
+// export default {
+//   name: 'Category',
+//   data() {
+//     return{
+//     }
+//   },
+//   mounted() {
+//    this.scroll = new BScroll(this.$refs.wrappertest,{
+//     probeType: true,
+//     pullUpLoad: true,
+//     scrollY: true,
+//     pullDownRefresh: true,
+//     click: true,
+//    })
 
-   this.scroll.on('scroll', (position) => {
-     console.log(position);
-   })
+//    this.scroll.on('scroll', (position) => {
+//      console.log(position);
+//    })
 
-   this.scroll.on('pullingUp', () => {
-     console.log('上拉加载更多');
-   })
-   this.scroll.on('pullingDown', () => {
-     console.log('下拉加载更多');
-   })
-  },
-  methods: {
+//    this.scroll.on('pullingUp', () => {
+//      console.log('上拉加载更多');
+//    })
+//    this.scroll.on('pullingDown', () => {
+//      console.log('下拉加载更多');
+//    })
+//   },
+//   methods: {
 
-  }
-}
+//   }
+// }
 </script>
 
 <style scoped>
-.wrapper {
+/* .wrapper {
   overflow: hidden;
   height: 200px;
   background-color: red;
-}
+} */
 </style>
