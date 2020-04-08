@@ -2,7 +2,14 @@
   <div id="home">
     <home-nav-bar/>
 
-    <Scroll class="content">
+    <Scroll
+    class="content"
+    ref="scroll"
+    :probe-type="3"
+    @sendScroll="handleScroll"
+    :pull-up-load="true"
+    @sendpullup="loadMore"
+    >
       <home-swiper :banner="banner"/>
       <home-recommend :recommend="recommend"/>
       <home-feature/>
@@ -12,6 +19,8 @@
       @tabClick = 'tabClick'/>
       <goods-list :goods="showGoods"/>
     </Scroll>
+
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -26,6 +35,7 @@ import Scroll from 'components/common/scroll/Scroll'
 
 import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
+import BackTop from 'components/content/backtop/BackTop'
 
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
@@ -39,7 +49,8 @@ export default {
     HomeFeature,
     TabControl,
     GoodsList,
-    Scroll
+    Scroll,
+    BackTop
   },
   data() {
     return {
@@ -51,7 +62,8 @@ export default {
         'sell': {page: 0, list: []}
       },
       titles: ['流行','新款','精选'],
-      currentType: 'pop'
+      currentType: 'pop',
+      isShowBackTop: false
     }
   },
   created() {
@@ -88,7 +100,10 @@ export default {
         .then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1
+
+          this.$refs.scroll.finishPullUp()
         })
+        
     },
     /***
     ****逻辑处理部分
@@ -105,7 +120,17 @@ export default {
           this.currentType = 'sell'
       }
     },
-  }
+    backClick() {
+      this.$refs.scroll.scrollTo(0,0)
+    },
+    handleScroll(position) {
+      this.isShowBackTop = (-position.y) > 1000
+    },
+    loadMore() {
+      this.HomeGoods(this.currentType)
+      console.log("下拉加载");
+    }
+  },
 }
 </script>
 
