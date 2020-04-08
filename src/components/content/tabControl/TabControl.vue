@@ -4,7 +4,7 @@
     v-for="(item,index) in titles"
     :key="index"
     class="tab-control-item"
-    :class="{active: currentIndex == index}"
+    :class="{active: currentIndex === index}"
     @click="itemClick(index)"
     >
       <span>{{item}}</span>

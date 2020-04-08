@@ -10,6 +10,9 @@ Vue.config.productionTip = false
 //解决移动端点击300ms延迟
 fastclick.attach(document.body)
 
+//事件总线
+Vue.prototype.$bus = new Vue()
+
 new Vue({
   router,
   store,

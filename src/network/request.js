@@ -6,6 +6,7 @@ export function request(config){
     baseURL: 'http://106.54.54.237:8000/api/h8',
     timeout: 5000,
     // withCredentials: true,
+    // changeOrigin: true,
     method: 'get',
   })
 

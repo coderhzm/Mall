@@ -1,7 +1,13 @@
 <template>
   <div id="home">
     <home-nav-bar/>
-
+    <tab-control
+      :titles="titles"
+      @tabClick = 'tabClick'
+      ref="tabcontrolA"
+      class = "is-tab-control"
+      v-show="isTabShow"/>
+      
     <Scroll
     class="content"
     ref="scroll"
@@ -10,13 +16,13 @@
     :pull-up-load="true"
     @sendpullup="loadMore"
     >
-      <home-swiper :banner="banner"/>
+      <home-swiper :banner="banner" @swiperimageload='swiperimageload' />
       <home-recommend :recommend="recommend"/>
       <home-feature/>
       <tab-control
-      class="tab-control"
       :titles="titles"
-      @tabClick = 'tabClick'/>
+      @tabClick = 'tabClick'
+      ref="tabcontrolB"/>
       <goods-list :goods="showGoods"/>
     </Scroll>
 
@@ -39,6 +45,7 @@ import BackTop from 'components/content/backtop/BackTop'
 
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
+import { debounce } from 'common/utlis'
 
 export default {
   name: 'Home',
@@ -63,7 +70,9 @@ export default {
       },
       titles: ['流行','新款','精选'],
       currentType: 'pop',
-      isShowBackTop: false
+      isShowBackTop: false,
+      tabOffsetTop: 0,
+      isTabShow: false
     }
   },
   created() {
@@ -74,14 +83,21 @@ export default {
     this.HomeGoods('new')
     this.HomeGoods('sell')
   },
+  mounted() {
+    //监听图片加载
+    const refresh = debounce(this.$refs.scroll.refresh,200)
+    this.$bus.$on('itemImageLoad',() => {
+      refresh()
+    })
+  },
   computed: {
     showGoods() {
       return this.goods[this.currentType].list
     }
   },
   methods: {
-    /*数据请求部分
-    ****
+    /***
+    ****数据请求部分
     ****/
     //首页轮播（banner）和recommend数据
     HomeMultidata() {
@@ -89,8 +105,10 @@ export default {
         .then(res => {
           // console.log(res.success);
           // console.log(res.data);
-          this.banner = res.data.banner.list
-          this.recommend = res.data.recommend.list
+          if(res.success && res.data) {
+            this.banner = res.data.banner.list
+            this.recommend = res.data.recommend.list
+          }
         })
     },
     //首页商品数据
@@ -98,9 +116,11 @@ export default {
       const page = this.goods[type].page + 1
       getHomeGoods(type,page)
         .then(res => {
-          this.goods[type].list.push(...res.data.list)
-          this.goods[type].page += 1
-
+          if(res.success && res.data) {
+            this.goods[type].list.push(...res.data.list)
+            this.goods[type].page += 1
+          }
+          //完成加载更多
           this.$refs.scroll.finishPullUp()
         })
         
@@ -108,6 +128,7 @@ export default {
     /***
     ****逻辑处理部分
     ****/
+  //判断展示的goods
    tabClick(index) {
       switch(index) {
         case 0:
@@ -119,17 +140,30 @@ export default {
         case 2:
           this.currentType = 'sell'
       }
+      this.$refs.tabcontrolA.currentIndex = index
+      this.$refs.tabcontrolB.currentIndex = index
     },
+    //BackTop
+    //回顶部
     backClick() {
       this.$refs.scroll.scrollTo(0,0)
     },
-    handleScroll(position) {
-      this.isShowBackTop = (-position.y) > 1000
+    //获取tab-control的offetTop高度
+    swiperimageload() {
+      this.tabOffsetTop = this.$refs.tabcontrolB.$el.offsetTop
     },
+    handleScroll(position) {
+      //是否显示
+      this.isShowBackTop = (-position.y) > this.tabOffsetTop
+      //BackTop是否吸顶
+      this.isTabShow = (-position.y) > this.tabOffsetTop
+    },
+    
+    //上拉加载更多
     loadMore() {
       this.HomeGoods(this.currentType)
-      console.log("下拉加载");
-    }
+    },
+
   },
 }
 </script>
@@ -148,5 +182,9 @@ export default {
   left: 0;
   right: 0;
   overflow: hidden;
+}
+.is-tab-control {
+  position: relative;
+  z-index: 9;
 }
 </style>

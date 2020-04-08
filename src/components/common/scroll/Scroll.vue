@@ -28,24 +28,43 @@ export default {
   mounted() {
     this.scroll = new BScroll(this.$refs.wrapper,{
       click: true,
+      //监听屏幕滚动的
       probeType: this.probeType,
+      //监听上拉
       pullUpLoad: this.pullUpLoad
     })
-
-    this.scroll.on('scroll', (position) => {
-      this.$emit('sendScroll', position)
-    })
-
-    this.scroll.on('pullingUp', () => {
-      this.$emit('sendpullup')
-    })
+    //监听屏幕滚动的
+    if(this.probeType === 2 || this.probeType === 3) {
+      this.scroll.on('scroll', (position) => {
+        this.$emit('sendScroll', position)
+      })
+    }
+    
+    //监听上拉
+    if(this.pullUpLoad) {
+      this.scroll.on('pullingUp', () => {
+        this.$emit('sendpullup')
+      })
+    }
   },
   methods: {
-    scrollTo(x, y, time=500) {
-      this.scroll.scrollTo(x, y , time)
+    scrollTo(x, y, time=300) {
+      // if(this.scroll && this.scroll.scrollTo) {
+      //   this.scroll.scrollTo(x, y , time)
+      // }
+      this.scroll && this.scroll.scrollTo(x, y , time)
     },
     finishPullUp() {
+      // if(this.scroll && this.scroll.finishPullUp) {
+      //   this.scroll.finishPullUp()
+      // }
       this.scroll.finishPullUp()
+    },
+    refresh() {
+      // if(this.scroll && this.scroll.refresh) {
+      //   this.scroll.refresh()
+      // }
+      this.scroll && this.scroll.refresh()
     }
   }
 }

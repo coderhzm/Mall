@@ -9,12 +9,12 @@
       <tab-bar-item link="/category" :activeColor = "this.activeColor">
         <img slot="icon" src="~assets/img/tabbar/category.svg" alt="">
         <img slot="active-icon" src="~assets/img/tabbar/category_active.svg" alt="">
-        <div slot="text">首页</div>
+        <div slot="text">分类</div>
       </tab-bar-item>
       <tab-bar-item link="/cart" :activeColor = "this.activeColor">
         <img slot="icon" src="~assets/img/tabbar/cart.svg" alt="">
         <img slot="active-icon" src="~assets/img/tabbar/cart_active.svg" alt="">
-        <div slot="text">首页</div>
+        <div slot="text">购物车</div>
       </tab-bar-item>
       <tab-bar-item link="/profile" :activeColor = "this.activeColor">
         <img slot="icon" src="~assets/img/tabbar/profile.svg" alt="">
