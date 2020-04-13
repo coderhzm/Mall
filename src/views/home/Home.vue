@@ -77,6 +77,7 @@ export default {
     }
   },
   created() {
+    console.log("home创建");
     //请求banner和recommend数据
     this.HomeMultidata()
     //请求商品（goods）数据
@@ -94,9 +95,11 @@ export default {
   activated() {
     this.$refs.scroll.scrollTo(0, this.saveY, 0)
     this.$refs.scroll.refresh()
+    console.log("设置位置"+this.saveY);
   },
   deactivated() {
     this.saveY = this.$refs.scroll.getScrollY()
+    console.log("记录位置"+this.saveY);
   },
   computed: {
     showGoods() {
