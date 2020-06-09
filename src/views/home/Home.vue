@@ -77,6 +77,7 @@ export default {
     }
   },
   created() {
+    console.log("home创建");
     //请求banner和recommend数据
     this.HomeMultidata()
     //请求商品（goods）数据
@@ -91,12 +92,15 @@ export default {
       refresh()
     })
   },
+  //activated和deactivated钩子函数记录位置
   activated() {
-    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    this.$refs.scroll.scrollTo(0, this.saveY, 300)
     this.$refs.scroll.refresh()
+    // console.log("设置位置"+this.saveY);
   },
   deactivated() {
-    this.saveY = this.$refs.scroll.getScrollY()
+    this.saveY = this.$refs.scroll.getCurrentY()
+    // console.log("记录位置"+this.saveY);
   },
   computed: {
     showGoods() {
@@ -154,7 +158,7 @@ export default {
     //BackTop
     //回顶部
     backClick() {
-      this.$refs.scroll.scrollTo(0,0)
+      this.$refs.scroll.scrollTo(0,0,300)
     },
     //获取tab-control的offetTop高度
     swiperimageload() {
