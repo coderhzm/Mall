@@ -41,8 +41,13 @@ const routes = [
       title: "我的"
     },
     component: Profile
-  },{
-    path: '/detail/:iid',
+  },
+  {
+    // path: '/detail/:iid',
+    path: '/detail',
+    meta: {
+      title: "详情页"
+    },
     component: Detail
   }
 ]

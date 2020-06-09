@@ -92,14 +92,15 @@ export default {
       refresh()
     })
   },
+  //activated和deactivated钩子函数记录位置
   activated() {
-    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    this.$refs.scroll.scrollTo(0, this.saveY, 300)
     this.$refs.scroll.refresh()
-    console.log("设置位置"+this.saveY);
+    // console.log("设置位置"+this.saveY);
   },
   deactivated() {
-    this.saveY = this.$refs.scroll.getScrollY()
-    console.log("记录位置"+this.saveY);
+    this.saveY = this.$refs.scroll.getCurrentY()
+    // console.log("记录位置"+this.saveY);
   },
   computed: {
     showGoods() {
@@ -157,7 +158,7 @@ export default {
     //BackTop
     //回顶部
     backClick() {
-      this.$refs.scroll.scrollTo(0,0)
+      this.$refs.scroll.scrollTo(0,0,300)
     },
     //获取tab-control的offetTop高度
     swiperimageload() {

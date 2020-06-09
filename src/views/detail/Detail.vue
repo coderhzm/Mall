@@ -29,7 +29,10 @@ export default {
   },
   created() {
     //1.保存iid
-    this.iid = this.$route.params.iid
+    // 方法1：
+    // this.iid = this.$route.params.iid
+    // 方法2：
+    this.iid = this.$route.query.iid
     //2.根据iid请求数据
     this.detailData(this.iid)
   },
