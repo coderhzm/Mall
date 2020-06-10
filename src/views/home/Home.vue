@@ -77,7 +77,7 @@ export default {
     }
   },
   created() {
-    console.log("home创建");
+    // console.log("home创建");
     //请求banner和recommend数据
     this.HomeMultidata()
     //请求商品（goods）数据
@@ -117,10 +117,10 @@ export default {
         .then(res => {
           // console.log(res.success);
           // console.log(res.data);
-          if(res.success && res.data) {
+          // if(res.success && res.data) {
             this.banner = res.data.banner.list
             this.recommend = res.data.recommend.list
-          }
+          // }
         })
     },
     //首页商品数据
@@ -128,10 +128,10 @@ export default {
       const page = this.goods[type].page + 1
       getHomeGoods(type,page)
         .then(res => {
-          if(res.success && res.data) {
+          // if(res.success && res.data) {
             this.goods[type].list.push(...res.data.list)
             this.goods[type].page += 1
-          }
+          // }
           //完成加载更多
           this.$refs.scroll.finishPullUp()
         })
