@@ -5,6 +5,7 @@
       <detail-Swiper :topImages='topImages' />
       <detail-base-info :goods='GoodsInfo' />
       <detail-store-info :storeInfo="storeInfo" />
+      <detail-image-info :detailImage="detailImage" />
     </Scroll>
   </div>
 </template>
@@ -14,6 +15,7 @@ import DetailNavBar from './childComps/DetailNavBar'
 import DetailSwiper from './childComps/DetailSwiper'
 import DetailBaseInfo from './childComps/DetailBaseInfo'
 import DetailStoreInfo from './childComps/DetailStoreInfo'
+import DetailImageInfo from './childComps/DetailImageInfo'
 
 import Scroll from 'components/common/scroll/Scroll'
 
@@ -26,7 +28,8 @@ export default {
     DetailSwiper,
     DetailBaseInfo,
     Scroll,
-    DetailStoreInfo
+    DetailStoreInfo,
+    DetailImageInfo
   },
   data() {
     return {
@@ -34,7 +37,8 @@ export default {
       iid: null,
       topImages: [],
       GoodsInfo: {},
-      storeInfo: {}
+      storeInfo: {},
+      detailImage: {}
     }
   },
   created() {
@@ -58,7 +62,9 @@ export default {
           //商品数据
           this.GoodsInfo = new Goods(data.itemInfo, data.columns, data.shopInfo.services);
           //店铺信息
-          this.storeInfo = data.shopInfo
+          this.storeInfo = data.shopInfo;
+          //详情信息图片
+          this.detailImage = data.detailInfo
         })
      }
   }
