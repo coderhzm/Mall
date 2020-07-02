@@ -45,7 +45,7 @@ import BackTop from 'components/content/backtop/BackTop'
 
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
-import { debounce } from 'common/utlis'
+import {itemListenerMixin} from 'common/mixin'
 
 export default {
   name: 'Home',
@@ -73,9 +73,10 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabShow: false,
-      saveY: 0
+      saveY: 0,
     }
   },
+  mixins: [itemListenerMixin],
   created() {
     // console.log("home创建");
     //请求banner和recommend数据
@@ -86,11 +87,7 @@ export default {
     this.HomeGoods('sell')
   },
   mounted() {
-    //监听图片加载
-    const refresh = debounce(this.$refs.scroll.refresh,200)
-    this.$bus.$on('itemImageLoad',() => {
-      refresh()
-    })
+    
   },
   //activated和deactivated钩子函数记录位置
   activated() {
@@ -99,8 +96,12 @@ export default {
     // console.log("设置位置"+this.saveY);
   },
   deactivated() {
+    //1.保存屏幕y值
     this.saveY = this.$refs.scroll.getCurrentY()
     // console.log("记录位置"+this.saveY);
+    
+    //2.取消全局事件
+    this.$bus.$off("itemImageLoad", this.itemImglisener)
   },
   computed: {
     showGoods() {

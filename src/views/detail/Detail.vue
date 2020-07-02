@@ -1,12 +1,14 @@
 <template>
   <div id="detail">
     <detail-nav-bar :navBarTitle='navBarTitle' />
-    <Scroll class="content">
+    <Scroll class="content" ref="scroll">
       <detail-Swiper :topImages='topImages' />
       <detail-base-info :goods='GoodsInfo' />
       <detail-store-info :storeInfo="storeInfo" />
       <detail-image-info :detailImage="detailImage" />
       <detail-params-info :itemParams="itemParams" />
+      <detail-comment-info :commentInfo="commentInfo" />
+      <goods-list :goods="recommends" />
     </Scroll>
   </div>
 </template>
@@ -18,10 +20,15 @@ import DetailBaseInfo from './childComps/DetailBaseInfo'
 import DetailStoreInfo from './childComps/DetailStoreInfo'
 import DetailImageInfo from './childComps/DetailImageInfo'
 import DetailParamsInfo from './childComps/DetailParamsInfo'
+import DetailCommentInfo from './childComps/DetailCommentInfo'
 
 import Scroll from 'components/common/scroll/Scroll'
 
-import {getDetail, Goods} from 'network/detail'
+import GoodsList from 'components/content/goods/GoodsList'
+
+import {getDetail, Goods, getRecommend} from 'network/detail'
+
+import {itemListenerMixin} from 'common/mixin'
 
 export default {
   name: 'Detail',
@@ -33,7 +40,9 @@ export default {
     DetailBaseInfo,
     DetailStoreInfo,
     DetailImageInfo,
-    DetailParamsInfo
+    DetailParamsInfo,
+    DetailCommentInfo,
+    GoodsList
   },
   data() {
     return {
@@ -43,9 +52,12 @@ export default {
       GoodsInfo: {},
       storeInfo: {},
       detailImage: {},
-      itemParams: {}
+      itemParams: {},
+      commentInfo: {},
+      recommends: [],
     }
   },
+  mixins: [itemListenerMixin],
   created() {
     //1.保存iid
     // 方法1：
@@ -54,13 +66,21 @@ export default {
     this.iid = this.$route.query.iid
     //2.根据iid请求数据
     this.detailData(this.iid)
+    //3.推荐数据
+    this.recommend()
+  },
+  mounted() {
+    
+  },
+  destroyed() {
+    this.$bus.$off("itemImageLoad", this.itemImglisener)
   },
   methods: {  
     //详情页数据
      detailData(iid) {
        getDetail(iid)
         .then(res => {
-          console.log(res.result);
+          // console.log(res.result);
           const data = res.result;
           //详情页轮播图数据
           this.topImages = data.itemInfo.topImages;
@@ -71,7 +91,21 @@ export default {
           //详情信息图片
           this.detailImage = data.detailInfo;
           //商品参数信息
-          this.itemParams = data.itemParams
+          this.itemParams = data.itemParams;
+          //评论信息
+          if(data.rate.cRate != 0) {
+            this.commentInfo = data.rate.list[0];
+          }
+          
+        })
+     },
+
+     recommend() {
+       getRecommend()
+        .then(res => {
+          console.log(res);
+          const date = res.data
+          this.recommends = date.list
         })
      }
   }
