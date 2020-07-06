@@ -1,14 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar :navBarTitle='navBarTitle' />
-    <Scroll class="content" ref="scroll">
-      <detail-Swiper :topImages='topImages' />
+    <detail-nav-bar :nav-bar-title='navBarTitle' @titleClick="titleClick" ref="navBar" />
+    <Scroll class="content" ref="scroll" :probeType='3' @sendScroll="contentScroll">
+      <detail-Swiper :top-images='topImages' />
       <detail-base-info :goods='GoodsInfo' />
-      <detail-store-info :storeInfo="storeInfo" />
-      <detail-image-info :detailImage="detailImage" />
-      <detail-params-info :itemParams="itemParams" />
-      <detail-comment-info :commentInfo="commentInfo" />
-      <goods-list :goods="recommends" />
+      <detail-store-info :store-info="storeInfo" />
+      <detail-image-info :detail-image="detailImage" @detailImageload="detailImageload" />
+      <detail-params-info ref="params" :item-params="itemParams" />
+      <detail-comment-info ref="comment" :comment-info="commentInfo" />
+      <goods-list ref="recommend" :goods="recommends" />
     </Scroll>
   </div>
 </template>
@@ -28,6 +28,7 @@ import GoodsList from 'components/content/goods/GoodsList'
 
 import {getDetail, Goods, getRecommend} from 'network/detail'
 
+import {debounce} from 'common/utlis'
 import {itemListenerMixin} from 'common/mixin'
 
 export default {
@@ -55,6 +56,8 @@ export default {
       itemParams: {},
       commentInfo: {},
       recommends: [],
+      getThemeTopY: null,
+      currentIndex: 0
     }
   },
   mixins: [itemListenerMixin],
@@ -68,6 +71,18 @@ export default {
     this.detailData(this.iid)
     //3.推荐数据
     this.recommend()
+    //给getThemeTopY赋值
+    this.getThemeTopY = debounce(() => {
+      this.themeTopY = []
+
+      this.themeTopY.push(0);
+      this.themeTopY.push(this.$refs.params.$el.offsetTop);
+      this.themeTopY.push(this.$refs.comment.$el.offsetTop);
+      this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
+      this.themeTopY.push(Number.MAX_VALUE)
+      
+      console.log(this.themeTopY);
+    },300)
   },
   mounted() {
     
@@ -96,18 +111,79 @@ export default {
           if(data.rate.cRate != 0) {
             this.commentInfo = data.rate.list[0];
           }
-          
+
+          //没有缓存时值不对
+          //获取商品，参数，评论，推荐offsetTop值
+          // this.$nextTick(() => {
+          //   this.themeTopY = []
+
+          //   this.themeTopY.push(0);
+          //   this.themeTopY.push(this.$refs.params.$el.offsetTop);
+          //   this.themeTopY.push(this.$refs.comment.$el.offsetTop);
+          //   this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
+            
+          //   console.log(this.themeTopY);
+          // })
+
         })
      },
 
-     recommend() {
-       getRecommend()
+    recommend() {
+      getRecommend()
         .then(res => {
           console.log(res);
           const date = res.data
           this.recommends = date.list
         })
-     }
+    },
+
+     //监听详情图片加载完刷新scroll
+    detailImageload() {
+       //混入中的refresh
+       this.refresh()
+
+       this.getThemeTopY()
+    },
+     
+     //监听navBarTitle点击
+    titleClick(index) {
+      // console.log(index);
+      this.$refs.scroll.scrollTo(0, -this.themeTopY[index], 300)
+    },
+
+    //监听内容滚动并改变标题
+    contentScroll(position) {
+      // console.log(-position.y);
+      //1.获取Y值
+      let positionY = -position.y
+      /**
+       * 1.普通做法
+       */
+      //2.positionY和标题的高度（getThemeTopY）进行对比
+      // let length  = this.themeTopY.length
+      // for(let i = 0; i < length; i++) {
+      //   if(this.currentIndex !== i && (i < length-1 && positionY >= this.themeTopY[i] && positionY < this.themeTopY[i+1]) || (i===length-1 && positionY > this.themeTopY[i])) {
+      //     this.currentIndex = i
+      //     // console.log(this.currentIndex);
+      //     this.$refs.navBar.currentIndex = this.currentIndex
+      //   }
+      // }
+
+      /* 
+      2.push一个最大值
+      */
+      let length  = this.themeTopY.length
+      for(let i = 0; i < length-1; i++) {
+        if(this.currentIndex !== i && (i < length-1 && positionY >= this.themeTopY[i] && positionY < this.themeTopY[i+1])) {
+          this.currentIndex = i
+          // console.log(this.currentIndex);
+          this.$refs.navBar.currentIndex = this.currentIndex
+        }
+      }
+
+    }
+
+
   }
 }
 </script>

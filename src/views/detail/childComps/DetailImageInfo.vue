@@ -11,7 +11,9 @@
       <img
       v-for="(item, index) in detailImage.detailImage[0].list"
       :key="index"
-      :src="item" />
+      :src="item"
+      @load="imageLoad"
+       />
     </div>
   </div>
 </template>
@@ -25,6 +27,11 @@ export default {
       default() {
         return {}
       }
+    }
+  },
+  methods: {
+    imageLoad() {
+      this.$emit("detailImageload")
     }
   }
 }
