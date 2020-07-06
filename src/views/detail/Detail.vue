@@ -81,7 +81,7 @@ export default {
       this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
       this.themeTopY.push(Number.MAX_VALUE)
       
-      console.log(this.themeTopY);
+      // console.log(this.themeTopY);
     },300)
   },
   mounted() {
