@@ -6,7 +6,7 @@
       </div>
       <div slot="center" class="title">
         <div 
-        v-for="(item,index) in titles"
+        v-for="(item,index) in navBarTitle"
         :key="index"
         :class="{active: currentIndex === index}"
         class="title-item"
@@ -24,18 +24,26 @@ import NavBar from 'components/common/navbar/NavBar'
 
 export default {
   name: 'DetailNavBar',
+  props: {
+    navBarTitle: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
   components: {
     NavBar
   },
   data() {
     return {
-      titles: ['商品','参数','评论','推荐'],
       currentIndex: 0
     }
   },
   methods: {
     itemClick(index) {
       this.currentIndex = index
+      this.$emit("titleClick", index)
     },
     DetBackClick() {
       this.$router.back()

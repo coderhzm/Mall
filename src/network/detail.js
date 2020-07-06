@@ -1,11 +1,19 @@
 import {request} from './request.js'
 
+//详情
 export function getDetail(iid) {
   return request({
     url: '/detail',
     params: {
       iid
     }
+  })
+}
+
+//推荐
+export function getRecommend() {
+  return request({
+    url: '/recommend',
   })
 }
 
@@ -19,5 +27,6 @@ export class Goods {
     this.columns = columns;
     this.services = services;
     this.nowPrice = itemInfo.highNowPrice;
+    this.discountBgColor = itemInfo.discountBgColor
   }
-};
+}

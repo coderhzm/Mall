@@ -45,7 +45,7 @@ import BackTop from 'components/content/backtop/BackTop'
 
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
-import { debounce } from 'common/utlis'
+import {itemListenerMixin} from 'common/mixin'
 
 export default {
   name: 'Home',
@@ -73,11 +73,12 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabShow: false,
-      saveY: 0
+      saveY: 0,
     }
   },
+  mixins: [itemListenerMixin],
   created() {
-    console.log("home创建");
+    // console.log("home创建");
     //请求banner和recommend数据
     this.HomeMultidata()
     //请求商品（goods）数据
@@ -86,11 +87,7 @@ export default {
     this.HomeGoods('sell')
   },
   mounted() {
-    //监听图片加载
-    const refresh = debounce(this.$refs.scroll.refresh,200)
-    this.$bus.$on('itemImageLoad',() => {
-      refresh()
-    })
+    
   },
   //activated和deactivated钩子函数记录位置
   activated() {
@@ -99,8 +96,12 @@ export default {
     // console.log("设置位置"+this.saveY);
   },
   deactivated() {
+    //1.保存屏幕y值
     this.saveY = this.$refs.scroll.getCurrentY()
     // console.log("记录位置"+this.saveY);
+    
+    //2.取消全局事件
+    this.$bus.$off("itemImageLoad", this.itemImglisener)
   },
   computed: {
     showGoods() {
@@ -117,10 +118,10 @@ export default {
         .then(res => {
           // console.log(res.success);
           // console.log(res.data);
-          if(res.success && res.data) {
+          // if(res.success && res.data) {
             this.banner = res.data.banner.list
             this.recommend = res.data.recommend.list
-          }
+          // }
         })
     },
     //首页商品数据
@@ -128,10 +129,10 @@ export default {
       const page = this.goods[type].page + 1
       getHomeGoods(type,page)
         .then(res => {
-          if(res.success && res.data) {
+          // if(res.success && res.data) {
             this.goods[type].list.push(...res.data.list)
             this.goods[type].page += 1
-          }
+          // }
           //完成加载更多
           this.$refs.scroll.finishPullUp()
         })
