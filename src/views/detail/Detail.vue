@@ -3,13 +3,16 @@
     <detail-nav-bar :nav-bar-title='navBarTitle' @titleClick="titleClick" ref="navBar" />
     <Scroll class="content" ref="scroll" :probeType='3' @sendScroll="contentScroll">
       <detail-Swiper :top-images='topImages' />
-      <detail-base-info :goods='GoodsInfo' />
+      <detail-base-info :goods='GoodsInfo' ref="baseInfo" />
       <detail-store-info :store-info="storeInfo" />
       <detail-image-info :detail-image="detailImage" @detailImageload="detailImageload" />
       <detail-params-info ref="params" :item-params="itemParams" />
       <detail-comment-info ref="comment" :comment-info="commentInfo" />
       <goods-list ref="recommend" :goods="recommends" />
     </Scroll>
+    <detail-bottom-bar @addToCart="addToCart" />
+    <!-- 回到顶部 -->
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -21,10 +24,12 @@ import DetailStoreInfo from './childComps/DetailStoreInfo'
 import DetailImageInfo from './childComps/DetailImageInfo'
 import DetailParamsInfo from './childComps/DetailParamsInfo'
 import DetailCommentInfo from './childComps/DetailCommentInfo'
+import DetailBottomBar from './childComps/DetailBottomBar'
 
 import Scroll from 'components/common/scroll/Scroll'
 
 import GoodsList from 'components/content/goods/GoodsList'
+import BackTop from '../../components/content/backtop/BackTop'
 
 import {getDetail, Goods, getRecommend} from 'network/detail'
 
@@ -43,6 +48,9 @@ export default {
     DetailImageInfo,
     DetailParamsInfo,
     DetailCommentInfo,
+    DetailBottomBar,
+    BackTop,
+
     GoodsList
   },
   data() {
@@ -57,7 +65,9 @@ export default {
       commentInfo: {},
       recommends: [],
       getThemeTopY: null,
-      currentIndex: 0
+      currentIndex: 0,
+      isShowBackTop: false,
+      baseInfoSetTop: 0
     }
   },
   mixins: [itemListenerMixin],
@@ -95,7 +105,7 @@ export default {
      detailData(iid) {
        getDetail(iid)
         .then(res => {
-          // console.log(res.result);
+          console.log(res.result);
           const data = res.result;
           //详情页轮播图数据
           this.topImages = data.itemInfo.topImages;
@@ -127,11 +137,11 @@ export default {
 
         })
      },
-
+    // 推荐
     recommend() {
       getRecommend()
         .then(res => {
-          console.log(res);
+          // console.log(res);
           const date = res.data
           this.recommends = date.list
         })
@@ -140,9 +150,11 @@ export default {
      //监听详情图片加载完刷新scroll
     detailImageload() {
        //混入中的refresh
-       this.refresh()
+      this.refresh()
 
-       this.getThemeTopY()
+      this.getThemeTopY()
+      //获取baseInfo高度
+      this.baseInfoSetTop = this.$refs.baseInfo.$el.offsetTop
     },
      
      //监听navBarTitle点击
@@ -180,10 +192,27 @@ export default {
           this.$refs.navBar.currentIndex = this.currentIndex
         }
       }
+      // 是否显示
+      this.isShowBackTop = (-position.y) > this.baseInfoSetTop
+    },
 
+    backClick() {
+      this.$refs.scroll.scrollTo(0,0,300)
+    },
+
+    // 加入购物车
+    addToCart() {
+      // 1.获取购物车需要展示的信息
+      const product = {}
+      product.image = this.topImages[0];
+      product.title = this.GoodsInfo.title;
+      product.desc = this.GoodsInfo.desc;
+      product.price = this.GoodsInfo.lowNowPrice;
+      product.iid = this.iid
+      //2.将商品添加到购物车
+      // this.$store.commit('addCart', product)
+      this.$store.dispatch('addCart', product)
     }
-
-
   }
 }
 </script>
